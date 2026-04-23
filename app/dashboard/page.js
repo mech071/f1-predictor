@@ -100,7 +100,8 @@ export default function Page() {
           uniqueId,
           name,
           predictions: positions,
-          racename: race?.name
+          racename: race?.name,
+          round:race?.round
         })
       })
       const data = await res.json()
@@ -130,7 +131,7 @@ export default function Page() {
               </h2>
               {race && (
                 <p className="text-sm text-rose-300">
-                  {race.name}
+                  Round {race.round} {race.name}
                 </p>
               )}
               <p className="text-sm text-rose-300">

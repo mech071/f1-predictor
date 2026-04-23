@@ -9,22 +9,19 @@ import { motion } from "motion/react"
 
 export default function Home() {
   const router = useRouter()
-
   const [uid, setUid] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [allowed, setAllowed] = useState(false)
-
-  // loading overlay states
   const [videoReady, setVideoReady] = useState(false)
   const [loadingTextIndex, setLoadingTextIndex] = useState(0)
 
   const loadingTexts = [
-    "Initializing grid...",
-    "Warming up engines...",
-    "Loading race data...",
-    "Syncing predictions...",
-    "Almost ready..."
+    "Box,box...",
+    "We are checking...",
+    "Contacting the world champion hotline...",
+    "Waiting for Stroll to finish the race...",
+    "Lights out and away we go..."
   ]
 
   useEffect(() => {
@@ -35,15 +32,11 @@ export default function Home() {
     })
     return () => unsub()
   }, [router, allowed])
-
-  // rotate loading text
   useEffect(() => {
     if (videoReady) return
-
     const interval = setInterval(() => {
       setLoadingTextIndex((prev) => (prev + 1) % loadingTexts.length)
-    }, 2000)
-
+    }, 1000)
     return () => clearInterval(interval)
   }, [videoReady])
 
@@ -95,8 +88,6 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-black">
-
-      {/* Loading Overlay */}
       <div
         className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-black text-white transition-opacity duration-700 ${
           videoReady ? "opacity-0 pointer-events-none" : "opacity-100"
@@ -107,8 +98,6 @@ export default function Home() {
           {loadingTexts[loadingTextIndex]}
         </p>
       </div>
-
-      {/* Background Video */}
       <video
         autoPlay
         loop
@@ -122,14 +111,8 @@ export default function Home() {
       >
         <source src="/New 2026 F1 Opening Titles - FORMULA 1 (1080p, h264, youtube).mp4" type="video/mp4" />
       </video>
-
-      {/* Overlay */}
       <div className="fixed top-0 left-0 w-full h-full bg-black/60 z-10" />
-
-      {/* Content */}
       <div className="relative z-20 text-white">
-
-        {/* Hero Section */}
         <section className="min-h-screen flex flex-col items-center justify-center px-4 text-center gap-4 sm:gap-6">
           <motion.h1
             initial={{ opacity: 0, y: 60 }}
@@ -139,7 +122,6 @@ export default function Home() {
           >
             F1 Predictor
           </motion.h1>
-
           <motion.p
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -149,8 +131,6 @@ export default function Home() {
             Introducing PWC - Predictor's World Championship
           </motion.p>
         </section>
-
-        {/* Login Section */}
         <section className="min-h-screen flex items-center justify-center px-4 py-10">
           <motion.div
             initial={{ opacity: 0, y: 100 }}
@@ -170,7 +150,6 @@ export default function Home() {
                 className="bg-zinc-800 px-3 sm:px-4 py-2.5 rounded outline-none focus:ring-1 focus:ring-white/30 text-sm sm:text-base"
               />
             </div>
-
             {error && (
               <div className="text-red-500">
                 {error}
@@ -180,7 +159,7 @@ export default function Home() {
             <button
               onClick={handleLogin}
               disabled={loading}
-              className={`w-full flex items-center justify-center gap-2 py-2.5 sm:py-3 text-sm sm:text-base font-medium transition rounded
+              className={`w-full flex items-center justify-center gap-2 py-2.5 sm:py-3 text-sm sm:text-base font-medium transition rounded cursor-pointer
               ${
                 loading
                   ? "bg-gray-400 cursor-not-allowed text-black"

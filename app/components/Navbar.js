@@ -64,6 +64,9 @@ const Navbar = () => {
           <Link href="/dashboard/standings" onClick={handleClose} className="p-2 rounded hover:bg-white/10 transition delay-100">
             Standings
           </Link>
+          <Link href="/dashboard/history" onClick={handleClose} className="p-2 rounded hover:bg-white/10 transition delay-100">
+            History
+          </Link>
         </div>
         <div className="mt-auto p-4 border-t border-white/10">
           <button
