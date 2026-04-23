@@ -109,7 +109,7 @@ export default function Home() {
         }}
         className="fixed top-0 left-0 w-full h-full object-cover z-0"
       >
-        <source src="/New 2026 F1 Opening Titles - FORMULA 1 (1080p, h264, youtube).mp4" type="video/mp4" />
+        <source src="/F1intro.mp4" type="video/mp4" />
       </video>
       <div className="fixed top-0 left-0 w-full h-full bg-black/60 z-10" />
       <div className="relative z-20 text-white">
