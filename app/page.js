@@ -36,7 +36,7 @@ export default function Home() {
     if (videoReady) return
     const interval = setInterval(() => {
       setLoadingTextIndex((prev) => (prev + 1) % loadingTexts.length)
-    }, 1000)
+    }, 2000)
     return () => clearInterval(interval)
   }, [videoReady])
 
