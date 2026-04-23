@@ -1,65 +1,127 @@
-import Image from "next/image";
-
+"use client"
+import { signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth"
+import { auth, provider } from "@/lib/firebase"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { FcGoogle } from "react-icons/fc"
+import { motion } from "motion/react"
 export default function Home() {
+  const router = useRouter()
+  const [uid, setUid] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [allowed, setAllowed] = useState(false)
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user && allowed) {
+        router.replace("/dashboard")
+      }
+    })
+    return () => unsub()
+  }, [router, allowed])
+  const handleLogin = async () => {
+    setError("")
+
+    if (!uid) {
+      setError("Please enter your UID")
+      return
+    }
+    try {
+      setLoading(true)
+      const result = await signInWithPopup(auth, provider)
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firebaseUid: result.user.uid,
+          uniqueId: uid,
+          name: result.user.displayName,
+        }),
+      })
+      let data = {}
+      try {
+        data = await res.json()
+      } catch { }
+      if (!res.ok) {
+        await signOut(auth)
+        setError(data.message || "Wrong account used")
+        setLoading(false)
+        return
+      }
+      setAllowed(true)
+      router.replace("/dashboard")
+    } catch (err) {
+      console.error(err)
+      setError("Login failed. Try again.")
+      setLoading(false)
+    }
+  }
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="relative min-h-screen overflow-x-hidden">
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="fixed top-0 left-0 w-full h-full object-cover z-0"
+      >
+        <source src="/New 2026 F1 Opening Titles - FORMULA 1 (1080p, h264, youtube).mp4" type="video/mp4" />
+      </video>
+      <div className="fixed top-0 left-0 w-full h-full bg-black/60 z-10" />
+      <div className="relative z-20 text-white">
+        <section className="min-h-screen flex flex-col items-center justify-center px-4 text-center gap-4 sm:gap-6">
+          <motion.h1
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="text-4xl sm:text-5xl md:text-7xl font-bold leading-tight"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            F1 Predictor
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.6 }}
+            className="text-sm sm:text-base md:text-xl text-gray-300 max-w-md"
           >
-            Documentation
-          </a>
-        </div>
-      </main>
+            Introducing PWC - Predictor's World Championship
+          </motion.p>
+        </section>
+        <section className="min-h-screen flex items-center justify-center px-4 py-10">
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="w-full max-w-xs sm:max-w-sm md:max-w-md border border-white/10 bg-zinc-900/60 backdrop-blur-md p-5 sm:p-6 md:p-8 shadow-lg flex flex-col gap-5 sm:gap-6"
+          >
+            <div className="flex flex-col gap-2">
+              <label className="text-sm text-gray-400">Enter UID</label>
+              <input
+                className="bg-zinc-800 px-3 sm:px-4 py-2.5 rounded outline-none focus:ring-1 focus:ring-white/30 text-sm sm:text-base"
+              />
+            </div>
+            {error && (
+              <div className="text-red-500">
+                {error}
+              </div>
+            )}
+            <button
+              className={`w-full flex items-center justify-center gap-2 py-2.5 sm:py-3 text-sm sm:text-base font-medium transition rounded
+             ${loading
+                  ? "bg-gray-400 cursor-not-allowed text-black"
+                  : "bg-white text-black hover:bg-gray-200"
+                }`}
+            >
+              <FcGoogle className="text-xl" />
+              {loading ? "Signing in..." : "Login with Google"}
+            </button>
+          </motion.div>
+        </section>
+      </div>
     </div>
-  );
+  )
 }
