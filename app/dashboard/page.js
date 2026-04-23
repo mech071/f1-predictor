@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { auth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
+import { useRouter } from "next/navigation"
 
 export default function Page() {
   const [name, setName] = useState("")
@@ -18,6 +19,7 @@ export default function Page() {
     updated[index] = value
     setPositions(updated)
   }
+  const router = useRouter()
   const raceData = async () => {
     const res = await fetch("https://api.jolpi.ca/ergast/f1/current/next.json")
     const data = await res.json()
@@ -30,6 +32,7 @@ export default function Page() {
     })
 
     setRace({
+      round: r.round,
       name: r.raceName,
       circuit: r.Circuit.circuitName,
       location: `${r.Circuit.Location.locality}, ${r.Circuit.Location.country}`,
@@ -53,7 +56,10 @@ export default function Page() {
   useEffect(() => {
     raceData()
     const unsub = onAuthStateChanged(auth, async (user) => {
-      if (!user) return
+      if (!user) {
+        router.replace("/")
+        return
+      }
 
       try {
         const res = await fetch("/api/me", {
@@ -101,7 +107,7 @@ export default function Page() {
           name,
           predictions: positions,
           racename: race?.name,
-          round:race?.round
+          round: race?.round
         })
       })
       const data = await res.json()
@@ -115,25 +121,27 @@ export default function Page() {
       setstop(false)
     }
   }
-
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-[#15151E] text-white flex flex-col items-center">
-      <h1 className="text-3xl font-bold mt-10">
+    <div className="min-h-[calc(100vh-64px)] bg-[#15151E] text-white flex flex-col items-center px-4 md:px-10">
+      <h1 className="text-2xl md:text-3xl font-bold mt-8 md:mt-10 text-center">
         {loading ? "Loading..." : `Hello ${name}`}
       </h1>
 
-      <div className="flex flex-1 w-full mt-6 px-10 gap-10">
+      <div className="flex flex-col md:flex-row flex-1 w-full mt-6 gap-6 md:gap-10">
+
         <div className="flex-1 flex items-center justify-center">
           {submitted ? (
-            <div className="bg-[#1c1c28] p-6 rounded-xl shadow-lg w-75 border border-[#2a2a3a] text-center flex flex-col gap-3">
-              <h2 className="text-xl font-semibold text-rose-200">
+            <div className="bg-[#1c1c28] p-5 md:p-6 rounded-xl shadow-lg w-full max-w-md border border-[#2a2a3a] text-center flex flex-col gap-3">
+              <h2 className="text-lg md:text-xl font-semibold text-rose-200">
                 Your prediction has been recorded
               </h2>
+
               {race && (
                 <p className="text-sm text-rose-300">
                   Round {race.round} {race.name}
                 </p>
               )}
+
               <p className="text-sm text-rose-300">
                 Check back after the race finishes to see your results.
               </p>
@@ -144,16 +152,18 @@ export default function Page() {
                 e.preventDefault()
                 submit()
               }}
-              className="bg-[#1c1c28] p-6 rounded-xl shadow-lg w-[320px] flex flex-col gap-4 border border-[#2a2a3a]"
+              className="bg-[#1c1c28] p-5 md:p-6 rounded-xl shadow-lg w-full max-w-md flex flex-col gap-4 border border-[#2a2a3a]"
             >
-              <h2 className="text-xl font-semibold text-center">
+              <h2 className="text-lg md:text-xl font-semibold text-center text-amber-300">
                 Predict Your Top 5
               </h2>
 
               {race && (
                 <div className="flex flex-col gap-1 text-sm text-center">
-                  <p className="font-medium text-indigo-300">{race.name}</p>
-                  <p className="text-indigo-200 mt-2">{race.timeIST}</p>
+                  <p className="font-medium text-yellow-300/90">
+                    Round {race.round}: {race.name}
+                  </p>
+                  <p className="text-yellow-200 mt-1">{race.timeIST}</p>
                 </div>
               )}
 
@@ -164,7 +174,7 @@ export default function Page() {
                   </label>
                   <input
                     required
-                    className="p-2 rounded bg-[#15151E] border border-[#2a2a3a] focus:outline-none focus:border-blue-500"
+                    className="p-2 rounded bg-[#15151E] border border-[#2a2a3a] focus:outline-none focus:border-blue-500 text-sm md:text-base"
                     placeholder={`Enter driver for P${pos}`}
                     value={positions[i]}
                     onChange={(e) => handleChange(i, e.target.value)}
@@ -174,7 +184,7 @@ export default function Page() {
 
               <button
                 type="submit"
-                className="mt-2 bg-red-600 hover:bg-red-700 transition rounded p-2 font-medium delay-100 cursor-pointer"
+                className="mt-2 bg-red-600 hover:bg-red-700 transition rounded p-2 font-medium cursor-pointer text-sm md:text-base"
                 disabled={stop}
               >
                 {stop ? "Submitting" : "Submit your predictions"}

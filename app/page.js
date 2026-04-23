@@ -26,12 +26,12 @@ export default function Home() {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
-      if (user && allowed) {
+      if (user) {
         router.replace("/dashboard")
       }
     })
     return () => unsub()
-  }, [router, allowed])
+  }, [router])
   useEffect(() => {
     if (videoReady) return
     const interval = setInterval(() => {
