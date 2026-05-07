@@ -35,7 +35,7 @@ export default function Page() {
             <div className="w-full max-w-md space-y-3">
                 {data.map((player, i) => (
                     <div
-                        key={player._id || player.name}
+                        key={player.name}
                         className={`flex justify-between items-center px-4 py-3 rounded-lg transition-all delay-100 duration-200 cursor-pointer ${getStyle(i)}`}
                     >
                         <span className="font-medium">

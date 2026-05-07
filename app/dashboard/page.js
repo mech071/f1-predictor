@@ -13,7 +13,6 @@ export default function Page() {
   const [positions, setPositions] = useState(Array(5).fill(""))
   const [race, setRace] = useState(null)
   const [submitted, setsubmitted] = useState(false)
-  const [wrongAccount, setWrongAccount] = useState(false)
   const handleChange = (index, value) => {
     const updated = [...positions]
     updated[index] = value
@@ -53,6 +52,26 @@ export default function Page() {
     const data = await res.json()
     setsubmitted(data.submitted)
   }
+  const results = async () => {
+    try {
+      const res = await fetch("/api/results", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      const data = await res.json()
+      console.log(data)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  useEffect(() => {
+    if (race?.name) {
+      results()
+    }
+  }, [race])
   useEffect(() => {
     raceData()
     const unsub = onAuthStateChanged(auth, async (user) => {
