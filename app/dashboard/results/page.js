@@ -12,6 +12,7 @@ const Page = () => {
   const [uniqueId, setUniqueId] = useState("")
   const [loading, setLoading] = useState(true)
   const [positionStatus, setPositionStatus] = useState([])
+  const [score, setScore] = useState("")
   const router = useRouter()
 
   useEffect(() => {
@@ -123,6 +124,7 @@ const Page = () => {
 
         if (res.ok) {
           setPositionStatus(data.result)
+          setScore(data.score)
         }
       } catch (err) {
         console.error("Position fetch failed:", err)
@@ -206,6 +208,9 @@ const Page = () => {
             )
           })}
         </div>
+        <h2 className='text-rose-300 my-4 text-xl text-center'>
+          Total points gained this round - {score}
+        </h2>
       </div>
     </div>
   )

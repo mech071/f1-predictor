@@ -18,18 +18,26 @@ export async function POST(request) {
     const results = data.MRData.RaceTable.Races[0].Results
     const actual = results.slice(0, 5).map(r => r.Driver.code)
     let arr = []
+    let sum = 0
     for (let i = 0; i < 5; i++) {
         if (predictions.predictions[i] === actual[i]) {
-            arr[i]=2
+            arr[i] = 2
+            sum += arr[i]
         } else if (actual.includes(predictions.predictions[i])) {
-            arr[i]=1
+            arr[i] = 1
+            sum += arr[i]
+
         }
-        else arr[i]=0
+        else {
+            arr[i] = 0
+            sum += arr[i]
+        }
     }
     return NextResponse.json(
         {
             message: "Successful",
             result: arr,
+            score:sum
         },
         { status: 200 }
     )
