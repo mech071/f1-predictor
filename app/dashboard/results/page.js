@@ -160,9 +160,6 @@ const Page = () => {
                 <p className="md:text-lg font-semibold">
                   P{driver.position} - {driver.Driver.givenName} {driver.Driver.familyName}
                 </p>
-                <p className="text-gray-400">
-                  {driver.Constructor.name}
-                </p>
               </div>
 
               <div className="text-right">
