@@ -209,7 +209,7 @@ const Page = () => {
           })}
         </div>
         <h2 className='text-rose-300 my-4 text-xl text-center'>
-          Total points gained this round - {score}
+          Total points gained this round - <span className='text-cyan-500'>{score}</span>
         </h2>
       </div>
     </div>
